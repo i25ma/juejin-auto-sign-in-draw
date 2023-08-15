@@ -27,12 +27,11 @@ async fn main() -> Result<(), RespError> {
     // 所以这里使用 ok() 的目的就是当加载 dotenv 环境文件失败的时候可以忽略错误。
     dotenv().ok();
 
-    let aid = env::var("AID").expect("AID 没有在 .env文件中设置");
-    let uuid = env::var("UUID").expect("UUID 没有在 .env 文件中设置");
-    let signature = env::var("SIGNATURE").expect("SIGNATURE 没有在 .env 文件中设置");
-    let _cookie = env::var("_COOKIE").expect("_COOKIE  没有在 .env 文件中设置");
+    let aid: String = env::var("AID").expect("AID 没有在 .env文件中设置");
+    let uuid: String = env::var("UUID").expect("UUID 没有在 .env 文件中设置");
+    let signature: String = env::var("SIGNATURE").expect("SIGNATURE 没有在 .env 文件中设置");
+    let _cookie: String = env::var("_COOKIE").expect("_COOKIE  没有在 .env 文件中设置");
 
-    println!("{aid}");
     let params = Post {
         aid: aid.as_str(),
         uuid: uuid.as_str(),
@@ -62,7 +61,8 @@ async fn main() -> Result<(), RespError> {
         let num = (get_cur_point.data / 200) as i32;
         println!("{num}");
         for i in 0..num {
-            println!("抽了{i} 次奖");
+            let draw_num = i + 1;
+            println!("抽了{draw_num} 次奖");
             draw(client.clone(), &params).await?;
         }
     }  
