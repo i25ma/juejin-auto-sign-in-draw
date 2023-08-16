@@ -60,10 +60,19 @@ async fn main() -> Result<(), RespError> {
     if get_cur_point.data >= 1 {
         let num = (get_cur_point.data / 200) as i32;
         println!("{num}");
-        for i in 0..num {
-            let draw_num = i + 1;
-            println!("抽了{draw_num} 次奖");
-            draw(client.clone(), &params).await?;
+        if num > 10 {
+            let ten_num = (num / 10) as i32;
+            for i in 0..ten_num {
+                let draw_num = i + 1;
+                println!("十连抽 抽了{draw_num} 次奖");
+                ten_draw(client.clone(), &params).await?;
+            }
+        } else {
+            for i in 0..num {
+                let draw_num = i + 1;
+                println!("单抽 抽了{draw_num} 次奖");
+                draw(client.clone(), &params).await?;
+            }
         }
     }  
     Ok(())
@@ -143,5 +152,18 @@ async fn draw(client: Client, new_post: &Post<'_>)-> Result<String, RespError> {
         .text()
         .await?;
     println!("抽奖：{:#?}", resp);
+    Ok(resp)
+}
+
+// 十连抽
+async fn ten_draw(client: Client, new_post: &Post<'_>) ->Result<String, RespError> {
+    let resp = client
+        .post(BASE_URL.to_string() + TEN_DRAWURL)
+        .json(new_post)
+        .send()
+        .await?
+        .text()
+        .await?;
+    println!("十连抽：{:#?}", resp);
     Ok(resp)
 }

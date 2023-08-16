@@ -15,3 +15,6 @@ pub const ISDRAW : &str = "/growth_api/v1/lottery_config/get";
 
 // 抽奖
 pub const DRAWURL : &str = "/growth_api/v1/lottery/draw";
+
+// 十连抽
+pub const TEN_DRAWURL : &str = "/growth_api/v1/lottery/ten_draw";
