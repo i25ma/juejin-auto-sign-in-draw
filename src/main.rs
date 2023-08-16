@@ -126,7 +126,7 @@ async fn get_cur_point(client: Client) -> Result<GetCurPoint, RespError> {
         .json::<GetCurPoint>()
         .await?;
 
-    println!("当前矿石数： {:#?}", resp);
+    println!("当前矿石数： {:#?}", resp.data);
     Ok(resp)
 }
 
@@ -138,7 +138,7 @@ async fn is_draw(client: Client) -> Result<DrawResp, RespError> {
         .await?
         .json::<DrawResp>()
         .await?;
-    println!("未抽奖次数还有：{:#?}", resp);
+    println!("未抽奖次数还有：{:#?}", resp.data.free_count);
     Ok(resp)
 }
 
