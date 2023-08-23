@@ -31,6 +31,7 @@ async fn main() -> Result<(), RespError> {
     let uuid: String = env::var("UUID").expect("UUID 没有在 .env 文件中设置");
     let signature: String = env::var("SIGNATURE").expect("SIGNATURE 没有在 .env 文件中设置");
     let _cookie: String = env::var("_COOKIE").expect("_COOKIE  没有在 .env 文件中设置");
+    let auto_draw: String = env::var("AUTO_DRAW").expect("AUTO_DRAW 没有在 .env 文件中配置");
 
     let params = Post {
         aid: aid.as_str(),
@@ -55,26 +56,32 @@ async fn main() -> Result<(), RespError> {
         draw(client.clone(), &params).await?;
     }
 
-    let get_cur_point = get_cur_point(client.clone()).await?;
-    println!("get_cur_point:{:#?}", get_cur_point);
-    if get_cur_point.data >= 1 {
-        let num = (get_cur_point.data / 200) as i32;
-        println!("{num}");
-        if num > 10 {
-            let ten_num = (num / 10) as i32;
-            for i in 0..ten_num {
-                let draw_num = i + 1;
-                println!("十连抽 抽了{draw_num} 次奖");
-                ten_draw(client.clone(), &params).await?;
+    if auto_draw == "true".to_string() {
+       
+        let get_cur_point = get_cur_point(client.clone()).await?;
+        println!("get_cur_point:{:#?}", get_cur_point);
+        if get_cur_point.data >= 1 {
+            let num = (get_cur_point.data / 200) as i32;
+            println!("{num}");
+            if num > 10 {
+                let ten_num = (num / 10) as i32;
+                for i in 0..ten_num {
+                    let draw_num = i + 1;
+                    println!("十连抽 抽了{draw_num} 次奖");
+                    ten_draw(client.clone(), &params).await?;
+                }
+            } else {
+                for i in 0..num {
+                    let draw_num = i + 1;
+                    println!("单抽 抽了{draw_num} 次奖");
+                    draw(client.clone(), &params).await?;
+                }
             }
-        } else {
-            for i in 0..num {
-                let draw_num = i + 1;
-                println!("单抽 抽了{draw_num} 次奖");
-                draw(client.clone(), &params).await?;
-            }
-        }
-    }  
+        }  
+    }
+
+
+
     Ok(())
 }
 
